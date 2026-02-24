@@ -1,40 +1,46 @@
 // Get all needed DOM elements
-const form = document.getElementById('checkInForm'); 
+const form = document.getElementById('checkInForm');
 const nameInput = document.getElementById('attendeeName');
 const teamSelect = document.getElementById('teamSelect');
+const attendeeCountSpan = document.getElementById('attendeeCount');
+const progressBar = document.getElementById('progressBar');
+const greeting = document.getElementById('greeting');
 
 // Track attendance
 let count = 0;
 const maxCount = 50;
 
+form.addEventListener('submit', function (event) {
+  event.preventDefault(); //Add a submit event listener to a form
 
-// Handle form submission
-form.addEventListener('submit', function(event) {
-    event.preventDefault(); // Prevent form from submitting normally
+  // Get the name a user typed in and the team they selected from a dropdown menu.
+  const name = nameInput.value; 
+  const team = teamSelect.value;
+  const teamLabel = teamSelect.selectedOptions[0].text; //
 
-    // Get form values
-    const name = nameInput.ariaValueMax;
-    const team = teamSelect.value;
-    const teamName = teamSelect.selectedOptions[0].text; // Get the text of the selected option
+  count++; // Create a counter that goes up by 1 every time someone submits the form.
 
-    console.log(name, teamName);
+  // Use the current count and a max goal to calculate a progress percentage.
+  const percentage = Math.round((count / maxCount) * 100);
 
-    // Increment count
-    count++;
-    console.log("Total check-ins: " + count);
+  // Combine a name and team into a welcome message
+  const message = `Welcome, ${name} from ${teamLabel}!`;
 
-    // Update progress bar
-    const percentage = Math.round(count / maxCount * 100) + '%';
-    console.log(`Progress:  ${percentage}`);
+  // Show the updated total count on the page
+  attendeeCountSpan.textContent = count;
 
-    //Update team counter
-    const teamCounter = document.getElementById(team + 'Count');
-    teamCounter.textContent = parseInt(teamCounter.textContent) + 1;
+  // Change the width of a progress bar based on the calculated progress.
+  progressBar.style.width = percentage + '%'; 
 
-    // Show welcome message
-    const message = `Welcome, ${name} from ${teamName}`;
-    console.log(message);
 
-    form.reset(); // Reset the form for the next check-in
+  // Update the correct team’s count on the page
+  const teamCounter = document.getElementById(team + 'Count');
+  teamCounter.textContent = Number(teamCounter.textContent) + 1;
+
+
+  greeting.textContent = message; // Display a greeting message that includes the person’s name and the full team label
+  greeting.classList.add('success-message');
+  greeting.style.display = 'block';
+
+  form.reset();  // Reset the form for the next check-in
 });
-
